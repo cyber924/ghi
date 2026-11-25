@@ -135,12 +135,7 @@ async function checkAuth() {
       currentUser = data.user;
     }
   } catch (e) {
-    console.log('Using local fallback state due to preview or offline mode');
-    // Read local stored session if any
-    const saved = localStorage.getItem('insight_user');
-    if (saved) {
-      try { currentUser = JSON.parse(saved); } catch (e) {}
-    }
+    currentUser = null;
   }
   updateNavUserUI();
 }

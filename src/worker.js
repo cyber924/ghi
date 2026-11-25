@@ -32,7 +32,7 @@ export default {
           return await handleLogin(request, env);
         }
         if (pathname === '/api/auth/logout' && method === 'POST') {
-          return handleLogout();
+          return await handleLogout(request, env);
         }
         if (pathname === '/api/auth/me' && method === 'GET') {
           return await handleMe(request, env);
@@ -160,31 +160,33 @@ function hexToBytes(hex) {
   return bytes;
 }
 
-// Session Cookie Management
-function createSessionCookie(userId, role) {
-  const payload = JSON.stringify({ userId, role, exp: Date.now() + 86400 * 7 * 1000 });
-  const b64 = btoa(unescape(encodeURIComponent(payload)));
-  return `session_auth=${b64}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=604800`;
+// Opaque server-side sessions; only a SHA-256 token digest is stored.
+async function ensureSessions(env) {
+  requireDB(env);
+  await env.DB.prepare("CREATE TABLE IF NOT EXISTS sessions (token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL, expires_at INTEGER NOT NULL)").run();
 }
-
-function parseSessionCookie(request) {
-  const cookieHeader = request.headers.get('Cookie');
-  if (!cookieHeader) return null;
-  const cookies = Object.fromEntries(
-    cookieHeader.split(';').map(c => {
-      const [k, ...v] = c.trim().split('=');
-      return [k, v.join('=')];
-    })
-  );
-  if (!cookies.session_auth) return null;
-  try {
-    const raw = decodeURIComponent(escape(atob(cookies.session_auth)));
-    const parsed = JSON.parse(raw);
-    if (parsed.exp && parsed.exp < Date.now()) return null;
-    return parsed;
-  } catch (e) {
-    return null;
+async function tokenHash(token) {
+  return bytesToHex(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(token))));
+}
+async function createSessionCookie(env, userId) {
+  await ensureSessions(env);
+  const token = bytesToHex(crypto.getRandomValues(new Uint8Array(32)));
+  await env.DB.prepare('INSERT INTO sessions (token_hash, user_id, expires_at) VALUES (?, ?, ?)').bind(await tokenHash(token), userId, Date.now() + 604800000).run();
+  return `session_auth=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=604800`;
+}
+async function parseSessionCookie(request, env) {
+  const match = (request.headers.get('Cookie') || '').match(/(?:^|;\s*)session_auth=([0-9a-f]{64})(?:;|$)/);
+  if (!match || !env.DB) return null;
+  await ensureSessions(env);
+  return await env.DB.prepare('SELECT users.id AS userId, users.role FROM sessions JOIN users ON users.id = sessions.user_id WHERE sessions.token_hash = ? AND sessions.expires_at > ?').bind(await tokenHash(match[1]), Date.now()).first();
+}
+async function handleLogout(request, env) {
+  const match = (request.headers.get('Cookie') || '').match(/(?:^|;\s*)session_auth=([0-9a-f]{64})(?:;|$)/);
+  if (match && env.DB) {
+    await ensureSessions(env);
+    await env.DB.prepare('DELETE FROM sessions WHERE token_hash = ?').bind(await tokenHash(match[1])).run();
   }
+  return jsonResponse({ message: '로그아웃되었습니다.' }, 200, { 'Set-Cookie': 'session_auth=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0' });
 }
 
 function requireDB(env) {
@@ -199,8 +201,8 @@ async function handleRegister(request, env) {
   const body = await request.json();
   const { email, password, name, bio, role = 'author' } = body;
 
-  if (!email || !password || !name) {
-    return jsonResponse({ error: '이메일, 비밀번호, 이름은 필수 항목입니다.' }, 400);
+  if (typeof email !== 'string' || typeof password !== 'string' || typeof name !== 'string' || !email.trim() || !name.trim() || password.length < 8 || password.length > 256) {
+    return jsonResponse({ error: '이름과 이메일을 입력하고 비밀번호는 8자 이상으로 설정해 주세요.' }, 400);
   }
 
   const existing = await env.DB.prepare('SELECT id FROM users WHERE email = ?').bind(email).first();
@@ -210,13 +212,13 @@ async function handleRegister(request, env) {
 
   const { hash, salt } = await hashPassword(password);
   const userId = 'usr_' + crypto.randomUUID().slice(0, 12);
-  const userRole = (role === 'admin' || role === 'editor') ? role : 'author';
+  const userRole = 'author';
 
   await env.DB.prepare(
     `INSERT INTO users (id, email, password_hash, salt, name, role, bio) VALUES (?, ?, ?, ?, ?, ?, ?)`
   ).bind(userId, email, hash, salt, name, userRole, bio || '').run();
 
-  const cookieStr = createSessionCookie(userId, userRole);
+  const cookieStr = await createSessionCookie(env, userId);
   return jsonResponse({
     message: '회원가입이 성공적으로 완료되었습니다.',
     user: { id: userId, email, name, role: userRole }
@@ -242,20 +244,15 @@ async function handleLogin(request, env) {
     return jsonResponse({ error: '이메일 또는 비밀번호가 올바르지 않습니다.' }, 401);
   }
 
-  const cookieStr = createSessionCookie(user.id, user.role);
+  const cookieStr = await createSessionCookie(env, user.id);
   return jsonResponse({
     message: '로그인되었습니다.',
     user: { id: user.id, email: user.email, name: user.name, role: user.role, bio: user.bio, avatar_url: user.avatar_url }
   }, 200, { 'Set-Cookie': cookieStr });
 }
 
-function handleLogout() {
-  const expiredCookie = 'session_auth=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0';
-  return jsonResponse({ message: '로그아웃되었습니다.' }, 200, { 'Set-Cookie': expiredCookie });
-}
-
 async function handleMe(request, env) {
-  const session = parseSessionCookie(request);
+  const session = await parseSessionCookie(request, env);
   if (!session) {
     return jsonResponse({ user: null });
   }
@@ -305,7 +302,7 @@ async function handleGetPosts(request, env, url) {
 }
 
 async function handleCreatePost(request, env) {
-  const session = parseSessionCookie(request);
+  const session = await parseSessionCookie(request, env);
   if (!session) {
     return jsonResponse({ error: '로그인이 필요합니다.' }, 401);
   }
@@ -358,7 +355,7 @@ async function handleGetPostDetail(request, env, id) {
 }
 
 async function handleUpdatePost(request, env, id) {
-  const session = parseSessionCookie(request);
+  const session = await parseSessionCookie(request, env);
   if (!session) return jsonResponse({ error: '인증이 필요합니다.' }, 401);
   requireDB(env);
 
@@ -380,7 +377,7 @@ async function handleUpdatePost(request, env, id) {
 }
 
 async function handleDeletePost(request, env, id) {
-  const session = parseSessionCookie(request);
+  const session = await parseSessionCookie(request, env);
   if (!session) return jsonResponse({ error: '인증이 필요합니다.' }, 401);
   requireDB(env);
 
@@ -413,7 +410,7 @@ async function handleGetComments(request, env, postId) {
 
 async function handleAddComment(request, env, postId) {
   requireDB(env);
-  const session = parseSessionCookie(request);
+  const session = await parseSessionCookie(request, env);
   const body = await request.json();
   const { content, userName } = body;
 
@@ -517,7 +514,7 @@ async function handleAISummarize(request, env) {
 
 // ADMIN HANDLERS
 async function handleAdminGetUsers(request, env) {
-  const session = parseSessionCookie(request);
+  const session = await parseSessionCookie(request, env);
   if (!session || session.role !== 'admin') {
     return jsonResponse({ error: '관리자 권한이 필요합니다.' }, 403);
   }
@@ -528,7 +525,7 @@ async function handleAdminGetUsers(request, env) {
 }
 
 async function handleAdminUpdateRole(request, env, targetUserId) {
-  const session = parseSessionCookie(request);
+  const session = await parseSessionCookie(request, env);
   if (!session || session.role !== 'admin') {
     return jsonResponse({ error: '관리자 권한이 필요합니다.' }, 403);
   }

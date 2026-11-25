@@ -54,10 +54,7 @@
         아직 계정이 없으신가요? <a href="./signup.html" style="color:var(--accent-blue); font-weight:600;">회원가입</a>
       </div>
 
-      <div style="margin-top:2rem; padding-top:1.25rem; border-top:1px solid var(--border-color); font-size:0.8rem; color:var(--text-muted); background:#f8fafc; padding:1rem; border-radius:var(--radius-sm);">
-        💡 <strong>프리뷰 접속 시뮬레이션 안내:</strong><br>
-        실제 D1 DB 미설정 환경에서도 빠른 테스트를 위해 데모 로그인 세션이 로컬 스토리지에 저장되어 작성 및 관리자 페이지를 사용하실 수 있습니다.
-      </div>
+
     </div>
   </main>
 
@@ -89,7 +86,6 @@
           });
           const data = await res.json();
           if (res.ok && data.user) {
-            localStorage.setItem('insight_user', JSON.stringify(data.user));
             alert('성공적으로 로그인되었습니다.');
             window.location.href = './index.html';
             return;
@@ -98,18 +94,8 @@
             errBox.style.display = 'block';
           }
         } catch (e) {
-          console.log('Backend API unavailable, simulating demo login');
-          // Demo fallback logic
-          const isDev = email.includes('admin');
-          const mockUser = {
-            id: 'usr_demo_123',
-            email: email,
-            name: email.split('@')[0] || '데모 연구원',
-            role: isDev ? 'admin' : 'author'
-          };
-          localStorage.setItem('insight_user', JSON.stringify(mockUser));
-          alert(`[프리뷰 모드] ${mockUser.name}님 계정으로 데모 로그인되었습니다.`);
-          window.location.href = './index.html';
+          errBox.textContent = '서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.';
+          errBox.style.display = 'block';
         }
       });
     });
