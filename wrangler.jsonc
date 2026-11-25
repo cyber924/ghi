@@ -11,7 +11,7 @@
     {
       "binding": "DB",
       "database_name": "insight_db",
-      "database_id": "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+      "database_id": "d20790a8-dced-4e50-8cf0-22f8b45a19e5"
     }
   ]
 }
