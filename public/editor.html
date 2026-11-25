@@ -80,7 +80,7 @@ body.editor-page .main-content{max-width:1280px;padding:48px 28px 76px}
       <!-- Page Header -->
       <div class="editor-heading">
         <div>
-          <span style="font-size:0.85rem; font-weight:700; color:var(--accent-blue);">ANALYSIS WRITER</span>
+          <span class="editor-eyebrow">✦ ANALYSIS WRITER · PRO WORKSPACE</span>
           <h1 id="editor-page-title" style="font-size:2rem; font-weight:800; color:var(--primary-dark); margin-top:0.2rem;">전문 보고서 작성</h1>
           <p style="color:var(--text-muted); font-size:0.95rem;">데이터 분석결과, 심층 조사, 인사이트 보고서를 체계적으로 게시하세요.</p>
         </div>
@@ -168,12 +168,12 @@ body.editor-page .main-content{max-width:1280px;padding:48px 28px 76px}
           </div>
 
           <!-- Action Buttons -->
-          <div style="display: flex; gap: 1rem; justify-content: flex-end; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+          <div class="editor-bottom-bar"><span class="editor-bottom-note">작성한 내용은 서버에 저장되며 공개 상태에 따라 게시됩니다.</span><div class="editor-actions">
             <a href="./posts.html" class="btn btn-outline">취소</a>
             <button type="submit" class="btn btn-primary" id="btn-submit-post" style="padding: 0.75rem 2rem; font-size:1rem;">
               🚀 보고서 발행하기
             </button>
-          </div>
+          </div></div>
 
         </form>
       </div>
@@ -227,6 +227,8 @@ body.editor-page .main-content{max-width:1280px;padding:48px 28px 76px}
       const titleInput = document.getElementById('post-title');
       const catSelect = document.getElementById('post-category');
       const imageInput = document.getElementById('post-image');
+      const imagePreview = document.getElementById('cover-preview-image');
+      imageInput.addEventListener('input', () => { imagePreview.src = imageInput.value.trim(); });
       const summaryInput = document.getElementById('post-summary');
       const contentInput = document.getElementById('post-content');
       const tagsInput = document.getElementById('post-tags');
@@ -256,11 +258,12 @@ body.editor-page .main-content{max-width:1280px;padding:48px 28px 76px}
         if (existing) {
           titleInput.value = existing.title || '';
           catSelect.value = existing.category || 'IT·테크';
-          imageInput.value = existing.cover_image || '';
+          imageInput.value = existing.image_url || existing.cover_image || '';
+          imagePreview.src = imageInput.value;
           summaryInput.value = existing.summary || '';
           contentInput.value = existing.content || '';
           tagsInput.value = Array.isArray(existing.tags) ? existing.tags.join(', ') : (existing.tags || '');
-          statusSelect.value = existing.status || 'published';
+          statusSelect.value = Number(existing.is_published) === 0 ? 'draft' : (existing.status || 'published');
           counter.textContent = (existing.content || '').length + '자';
         }
       }
@@ -292,7 +295,7 @@ body.editor-page .main-content{max-width:1280px;padding:48px 28px 76px}
           const res = await fetch('/api/ai/summarize', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ text })
+            body: JSON.stringify({ content: text, title: titleInput.value.trim() })
           });
           
           if (res.ok) {
@@ -325,10 +328,10 @@ body.editor-page .main-content{max-width:1280px;padding:48px 28px 76px}
         const payload = {
           title: titleInput.value.trim(),
           category: catSelect.value,
-          cover_image: imageInput.value.trim(),
+          image_url: imageInput.value.trim(),
           summary: summaryInput.value.trim(),
           content: contentInput.value.trim(),
-          tags: tagsInput.value.split(',').map(t => t.trim()).filter(Boolean),
+          tags: tagsInput.value.split(',').map(t => t.trim()).filter(Boolean).join(', '),
           status: statusSelect.value
         };
 
@@ -345,18 +348,19 @@ body.editor-page .main-content{max-width:1280px;padding:48px 28px 76px}
           if (res.ok) {
             const result = await res.json();
             alert('✅ 보고서가 성공적으로 저장되었습니다!');
-            window.location.href = `./post.html?id=${result.post?.id || editPostId || 'post_1'}`;
+            window.location.href = `./post.html?id=${result.id || result.post?.id || editPostId || 'post_1'}`;
             return;
           } else {
             const errData = await res.json();
-            alert('알림: ' + (errData.error || '독립 프리뷰 환경이므로 MOCK 상태로 저장 안내를 출력합니다.'));
+            throw new Error(errData.error || '보고서 저장에 실패했습니다.');
           }
         } catch (err) {
-          console.warn('API submission unreachable, activating fallback success response');
+          console.error('Report submission failed:', err);
+          alert('보고서 저장에 실패했습니다: ' + (err.message || '서버 연결을 확인해주세요.'));
+          return;
         }
 
-        alert('✅ [프리뷰 시뮬레이션] 보고서가 제출되었습니다!\n(독립 미리보기 모드이므로 목록 페이지로 이동합니다.)');
-        window.location.href = './posts.html';
+        
       });
     });
   </script>
