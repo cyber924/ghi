@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>회원가입 - InsightPulse 전문 리포트 & 웹진</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="top-bar">
+    <div class="container top-bar-content">
+      <div><span>InsightPulse Intelligence &amp; Research Journal</span></div>
+      <div>
+        <a href="./login.html">로그인</a>
+        <a href="./signup.html" class="active">회원가입</a>
+        <a href="./admin.html">관리자 콘솔</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="main-header">
+    <div class="container header-inner">
+      <a href="./index.html" class="brand-logo">Insight<span>Pulse</span></a>
+      <nav class="main-nav">
+        <a href="./index.html">홈</a>
+        <a href="./posts.html">전문 리포트</a>
+        <a href="./archive.html">아카이브</a>
+        <a href="./editor.html">리포트 작성</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container py-12">
+    <div class="auth-card">
+      <h2>InsightPulse 멤버십 가입</h2>
+      <p class="text-sm text-gray mb-6">글로벌 테크, 웰빙, 라이프스타일 심층 보고서 및 AI 요약 서비스를 구독하세요.</p>
+
+      <div class="alert alert-info" id="mock-signup-notice">
+        <strong>💡 예시 모드 안내:</strong> 독립 미리보기 및 API 오프라인 상태에서도 폼 입력 테스트가 지원되는 스텁 상태입니다. D1 서버 연결 시 실시간 계정 생성이 이뤄집니다.
+      </div>
+
+      <form id="signup-form" class="auth-form" onsubmit="return false;">
+        <div class="form-group">
+          <label for="username">사용자명 (ID)</label>
+          <input type="text" id="username" name="username" class="form-control" placeholder="영문, 숫자 4자 이상" required>
+        </div>
+
+        <div class="form-group">
+          <label for="email">이메일 주소</label>
+          <input type="email" id="email" name="email" class="form-control" placeholder="name@domain.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">비밀번호</label>
+          <input type="password" id="password" name="password" class="form-control" placeholder="8자 이상, 특수문자 포함 권장" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password-confirm">비밀번호 확인</label>
+          <input type="password" id="password-confirm" name="password-confirm" class="form-control" placeholder="비밀번호 재입력" required>
+        </div>
+
+        <div class="form-group">
+          <label for="role">관심 전문 분야</label>
+          <select id="role" class="form-control">
+            <option value="tech">테크 &amp; AI 인사이트</option>
+            <option value="wellness">실버 &amp; 웰빙 라이프</option>
+            <option value="travel">글로벌 노마드 &amp; 로컬 탐방</option>
+            <option value="report">산업 분석 종합 보고서</option>
+          </select>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="agree-terms" required checked>
+          <label for="agree-terms">이용약관 및 개인정보 처리방침에 동의합니다.</label>
+        </div>
+
+        <button type="submit" id="signup-btn" class="btn btn-primary btn-block">회원가입 완료</button>
+      </form>
+
+      <div class="auth-footer">
+        이미 계정이 있으신가요? <a href="./login.html">로그인하기</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="main-footer">
+    <div class="container footer-grid">
+      <div>
+        <h3>InsightPulse</h3>
+        <p>글로벌 비즈니스, 스마트 라이프스타일, AI 기술 동향을 전달하는 데이터 기반 전문 매거진 &amp; 리포트 플랫폼입니다.</p>
+      </div>
+      <div>
+        <h4>빠른 링크</h4>
+        <ul>
+          <li><a href="./index.html">홈</a></li>
+          <li><a href="./posts.html">전문 리포트</a></li>
+          <li><a href="./archive.html">월별 아카이브</a></li>
+          <li><a href="./editor.html">새 리포트 작성</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>계정 &amp; 관리</h4>
+        <ul>
+          <li><a href="./login.html">로그인</a></li>
+          <li><a href="./signup.html">회원가입</a></li>
+          <li><a href="./admin.html">관리자 콘솔</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        &copy; 2025 InsightPulse Media. All rights reserved. Cloudflare Workers &amp; D1 Fullstack Project.
+      </div>
+    </div>
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>

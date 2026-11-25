@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>보고서 작성 및 수정 | InsightLab</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="./index.html" class="logo-area">
+        <span>InsightLab</span>
+        <span class="logo-badge">PRO REPORT</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="./index.html">홈</a></li>
+        <li><a href="./posts.html">보고서 목록</a></li>
+        <li><a href="./archive.html">아카이브 Matrix</a></li>
+        <li><a href="./editor.html" class="active">보고서 작성</a></li>
+      </ul>
+      <div class="nav-actions" id="nav-user-actions">
+        <!-- Dynamically rendered by app.js -->
+        <a href="./login.html" class="btn btn-outline btn-sm">로그인</a>
+        <a href="./signup.html" class="btn btn-primary btn-sm">회원가입</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Fallback Preview Banner -->
+  <div class="preview-mode-banner" id="demo-banner">
+    <span class="preview-pill">독립 프리뷰 안내</span>
+    <span>서버 API 미연결 시 예시 데이터 작성 및 로컬 스토리지 시뮬레이션 모드로 동작합니다.</span>
+  </div>
+
+  <main class="main-content">
+    <div style="max-width: 960px; margin: 0 auto;">
+      
+      <!-- Page Header -->
+      <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span style="font-size:0.85rem; font-weight:700; color:var(--accent-blue);">ANALYSIS WRITER</span>
+          <h1 id="editor-page-title" style="font-size:2rem; font-weight:800; color:var(--primary-dark); margin-top:0.2rem;">전문 보고서 작성</h1>
+          <p style="color:var(--text-muted); font-size:0.95rem;">데이터 분석결과, 심층 조사, 인사이트 보고서를 체계적으로 게시하세요.</p>
+        </div>
+        <div style="display:flex; gap:0.5rem;">
+          <a href="./posts.html" class="btn btn-outline btn-sm">← 목록으로</a>
+          <button type="button" class="btn btn-sm btn-outline" id="btn-load-sample">📄 샘플 보고서 불러오기</button>
+        </div>
+      </div>
+
+      <!-- Editor Form -->
+      <div class="card" style="padding: 2.25rem;">
+        <form id="editor-form" onsubmit="return false;">
+          
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <!-- Report Title -->
+            <div class="form-group" style="margin-bottom:0;">
+              <label for="post-title" class="form-label">보고서 제목 <span style="color:red;">*</span></label>
+              <input type="text" id="post-title" class="form-control" placeholder="예: 2025 AI 자동화 솔루션 시장 동향 보고서" required>
+            </div>
+            
+            <!-- Category -->
+            <div class="form-group" style="margin-bottom:0;">
+              <label for="post-category" class="form-label">분류 카테고리</label>
+              <select id="post-category" class="form-control">
+                <option value="IT·테크">IT·테크 (핀테크, AI, 플랫폼)</option>
+                <option value="라이프·웰니스">라이프·웰니스 (파크골프, 시니어)</option>
+                <option value="글로벌·트렌드">글로벌·트렌드 (노마드, 치앙마이)</option>
+                <option value="여행·문화">여행·문화 (강원도, 로컬 투어)</option>
+                <option value="경제·경영">경제·경영 (산업 분석)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Cover Image URL & Preset Selection -->
+          <div class="form-group">
+            <label for="post-image" class="form-label">대표 썸네일 이미지 URL</label>
+            <div style="display: flex; gap: 0.5rem;">
+              <input type="url" id="post-image" class="form-control" placeholder="https://..." value="https://image-hub-studio.herestay-4226.chatgpt.site/api/images/7iLRc6oD_1793769907772">
+            </div>
+            <div style="margin-top: 0.6rem; font-size: 0.8rem; color: var(--text-muted); display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+              <span>추천 선택 이미지:</span>
+              <button type="button" class="preset-img-btn" onclick="setEditorImage('https://image-hub-studio.herestay-4226.chatgpt.site/api/images/7iLRc6oD_1793769907772')">🏢 빌딩&핀테크</button>
+              <button type="button" class="preset-img-btn" onclick="setEditorImage('https://image-hub-studio.herestay-4226.chatgpt.site/api/images/7iLRc6oD_1792646356477')">⛳ 파크골프 웰니스</button>
+              <button type="button" class="preset-img-btn" onclick="setEditorImage('https://image-hub-studio.herestay-4226.chatgpt.site/api/images/external_94a1885a0d4a9c8ba6a33e6386efb089365f1515a44c0bd10084d0a5512a41a9')">💻 치앙마이 AI 노마드</button>
+              <button type="button" class="preset-img-btn" onclick="setEditorImage('https://image-hub-studio.herestay-4226.chatgpt.site/api/images/vizbot_25399a703b2f6fc89897cf5d4be8f080fe6bb1d313f0b5d5bf49288bb0ece6ab')">🚗 강원도 1박2일</button>
+            </div>
+          </div>
+
+          <!-- AI Executive Summary Assistant -->
+          <div style="background: #f0f7ff; border: 1px solid #bfdbfe; border-radius: var(--radius-sm); padding: 1rem 1.25rem; margin-bottom: 1.5rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; flex-wrap:wrap; gap:0.5rem;">
+              <span style="font-size:0.9rem; font-weight:700; color:var(--accent-blue); display:flex; align-items:center; gap:0.4rem;">
+                🤖 AI 요약 생성기 (Cloudflare Worker AI Secret 연동)
+              </span>
+              <button type="button" class="btn btn-sm btn-primary" id="btn-ai-generate" style="font-size:0.8rem;">
+                ✨ 본문 기반 AI 3줄 요약 자동생성
+              </button>
+            </div>
+            <label for="post-summary" class="form-label" style="font-size:0.85rem;">요약문 (Executive Summary)</label>
+            <textarea id="post-summary" class="form-control" rows="2" placeholder="핵심 요약 문장을 입력하거나 우측 상단 AI 자동생성 버튼을 누르세요."></textarea>
+          </div>
+
+          <!-- Main Content -->
+          <div class="form-group">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+              <label for="post-content" class="form-label" style="margin-bottom:0;">본문 내용 (마크다운 지원) <span style="color:red;">*</span></label>
+              <span style="font-size:0.8rem; color:var(--text-muted);" id="content-length-counter">0자</span>
+            </div>
+            <textarea id="post-content" class="form-control" rows="14" placeholder="보고서 본문을 작성하세요. (서론, 분석 결과, 시사점 등 구분)" required></textarea>
+          </div>
+
+          <!-- Tags & Settings -->
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label for="post-tags" class="form-label">태그 (쉼표로 구분)</label>
+              <input type="text" id="post-tags" class="form-control" placeholder="핀테크, AI, 2025전망, 시니어">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label for="post-status" class="form-label">공개 상태</label>
+              <select id="post-status" class="form-control">
+                <option value="published">발행 (공개)</option>
+                <option value="draft">임시 저장 (비공개)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div style="display: flex; gap: 1rem; justify-content: flex-end; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+            <a href="./posts.html" class="btn btn-outline">취소</a>
+            <button type="submit" class="btn btn-primary" id="btn-submit-post" style="padding: 0.75rem 2rem; font-size:1rem;">
+              🚀 보고서 발행하기
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="footer-logo">InsightLab Report</div>
+        <p>전문 분석가 및 연구원을 위한 데이터 기반 리포팅 미디어 솔루션입니다.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>네비게이션</h4>
+          <ul>
+            <li><a href="./index.html">홈</a></li>
+            <li><a href="./posts.html">보고서 목록</a></li>
+            <li><a href="./archive.html">아카이브 매트릭스</a></li>
+            <li><a href="./editor.html">보고서 작성</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>시스템 링크</h4>
+          <ul>
+            <li><a href="./login.html">로그인</a></li>
+            <li><a href="./signup.html">회원가입</a></li>
+            <li><a href="./admin.html">관리자 센터</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2025 InsightLab Professional Platform. All rights reserved.
+    </div>
+  </footer>
+
+  <script src="./app.js"></script>
+  <script>
+    function setEditorImage(url) {
+      document.getElementById('post-image').value = url;
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const authUser = await checkAuth();
+      
+      const urlParams = new URLSearchParams(window.location.search);
+      const editPostId = urlParams.get('id');
+      
+      const titleInput = document.getElementById('post-title');
+      const catSelect = document.getElementById('post-category');
+      const imageInput = document.getElementById('post-image');
+      const summaryInput = document.getElementById('post-summary');
+      const contentInput = document.getElementById('post-content');
+      const tagsInput = document.getElementById('post-tags');
+      const statusSelect = document.getElementById('post-status');
+      const counter = document.getElementById('content-length-counter');
+      const submitBtn = document.getElementById('btn-submit-post');
+      const pageTitle = document.getElementById('editor-page-title');
+
+      contentInput.addEventListener('input', () => {
+        counter.textContent = contentInput.value.length + '자';
+      });
+
+      // Edit Mode Initialization
+      if (editPostId) {
+        pageTitle.textContent = "보고서 수정 (ID: " + editPostId + ")";
+        submitBtn.textContent = "💾 수정사항 저장하기";
+        
+        let existing = window.MOCK_POSTS.find(p => p.id === editPostId);
+        try {
+          const res = await fetch('/api/posts/' + editPostId);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.post) existing = data.post;
+          }
+        } catch(e) {}
+
+        if (existing) {
+          titleInput.value = existing.title || '';
+          catSelect.value = existing.category || 'IT·테크';
+          imageInput.value = existing.cover_image || '';
+          summaryInput.value = existing.summary || '';
+          contentInput.value = existing.content || '';
+          tagsInput.value = Array.isArray(existing.tags) ? existing.tags.join(', ') : (existing.tags || '');
+          statusSelect.value = existing.status || 'published';
+          counter.textContent = (existing.content || '').length + '자';
+        }
+      }
+
+      // Sample Loader Button
+      document.getElementById('btn-load-sample').addEventListener('click', () => {
+        titleInput.value = "2025 디지털 금융과 AI 세대 통합 융합 전략 리포트";
+        catSelect.value = "IT·테크";
+        imageInput.value = "https://image-hub-studio.herestay-4226.chatgpt.site/api/images/7iLRc6oD_1793769907772";
+        summaryInput.value = "1. 빌딩 숲 금융 지구 중심 6G 네트워크 구축 현황 분석\n2. 조부모와 손자 세대를 잇는 파크골프 스마트 웰니스 플랫폼 실증 사례\n3. 치앙마이와 강원도를 잇는 글로벌 노마드 생태계 확장성 제시";
+        contentInput.value = "## 1. 서론: 차세대 기술과 웰니스 라이프의 인프라적 만남\n\n현대 도심 중심부에서는 파이낸셜 네트워크의 급격한 디지털 전환과 함께 고령층 및 영유아 세대를 아우르는 스마트 복지 모델이 대두되고 있습니다.\n\n## 2. 주요 연구 결과 및 지표\n\n- 스마트 핀테크 도입률 42% 증가\n- 세대 공감 파크골프 웰니스 참여율 65% 향상\n- 치앙마이 및 강원 로컬 거점 워케이션 인구 매년 28% 증가\n\n## 3. 결론 및 제언\n\n데이터 기반 인프라 투자는 단기 수익을 넘어 사회적 세대 통합과 국가 경쟁력 강화에 크게 이바지할 것입니다.";
+        tagsInput.value = "핀테크, 파크골프, 치앙마이, 강원도, 2025분석";
+        counter.textContent = contentInput.value.length + '자';
+      });
+
+      // AI Summary Button Action
+      document.getElementById('btn-ai-generate').addEventListener('click', async () => {
+        const text = contentInput.value;
+        if (!text || text.trim().length < 20) {
+          alert('AI 요약을 생성하려면 본문을 최소 20자 이상 입력해주세요.');
+          return;
+        }
+
+        const originalBtnText = document.getElementById('btn-ai-generate').innerHTML;
+        document.getElementById('btn-ai-generate').disabled = true;
+        document.getElementById('btn-ai-generate').innerHTML = '⏳ AI 분서 중...';
+
+        try {
+          const res = await fetch('/api/ai/summarize', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ text })
+          });
+          
+          if (res.ok) {
+            const data = await res.json();
+            if (data.summary) {
+              summaryInput.value = data.summary;
+            } else {
+              throw new Error();
+            }
+          } else {
+            throw new Error();
+          }
+        } catch (e) {
+          // Fallback simulation
+          const lines = text.split('\n').filter(l => l.trim().length > 10);
+          const mockSummary = lines.length > 0 
+            ? "• " + lines.slice(0, 3).join('\n• ') 
+            : "• " + text.substring(0, 150) + "...";
+          summaryInput.value = mockSummary;
+        } finally {
+          document.getElementById('btn-ai-generate').disabled = false;
+          document.getElementById('btn-ai-generate').innerHTML = originalBtnText;
+        }
+      });
+
+      // Submit Form
+      document.getElementById('editor-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const payload = {
+          title: titleInput.value.trim(),
+          category: catSelect.value,
+          cover_image: imageInput.value.trim(),
+          summary: summaryInput.value.trim(),
+          content: contentInput.value.trim(),
+          tags: tagsInput.value.split(',').map(t => t.trim()).filter(Boolean),
+          status: statusSelect.value
+        };
+
+        try {
+          const targetUrl = editPostId ? `/api/posts/${editPostId}` : '/api/posts';
+          const method = editPostId ? 'PUT' : 'POST';
+
+          const res = await fetch(targetUrl, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          if (res.ok) {
+            const result = await res.json();
+            alert('✅ 보고서가 성공적으로 저장되었습니다!');
+            window.location.href = `./post.html?id=${result.post?.id || editPostId || 'post_1'}`;
+            return;
+          } else {
+            const errData = await res.json();
+            alert('알림: ' + (errData.error || '독립 프리뷰 환경이므로 MOCK 상태로 저장 안내를 출력합니다.'));
+          }
+        } catch (err) {
+          console.warn('API submission unreachable, activating fallback success response');
+        }
+
+        alert('✅ [프리뷰 시뮬레이션] 보고서가 제출되었습니다!\n(독립 미리보기 모드이므로 목록 페이지로 이동합니다.)');
+        window.location.href = './posts.html';
+      });
+    });
+  </script>
+
+  <style>
+    .preset-img-btn {
+      background: #f1f5f9;
+      border: 1px solid var(--border-color);
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .preset-img-btn:hover {
+      background: #e2e8f0;
+      color: var(--accent-blue);
+    }
+  </style>
+</body>
+</html>

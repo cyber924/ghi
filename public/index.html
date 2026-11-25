@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InsightLab | 전문 블로그 & 지식 리포트 플랫폼</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="./index.html" class="logo-area">
+        <span>InsightLab</span>
+        <span class="logo-badge">PRO REPORT</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="./index.html" class="active">홈</a></li>
+        <li><a href="./posts.html">보고서 목록</a></li>
+        <li><a href="./archive.html">아카이브 Matrix</a></li>
+        <li><a href="./editor.html">보고서 작성</a></li>
+      </ul>
+      <div class="nav-actions" id="nav-user-actions">
+        <!-- Dynamically rendered by app.js -->
+        <a href="./login.html" class="btn btn-outline btn-sm">로그인</a>
+        <a href="./signup.html" class="btn btn-primary btn-sm">회원가입</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Fallback Preview Banner -->
+  <div class="preview-mode-banner" id="demo-banner">
+    <span class="preview-pill">독립 프리뷰 안내</span>
+    <span>서버 API 미연결 시 예시 전문 데이터 및 AI 요약 프리뷰 모드로 작동합니다.</span>
+  </div>
+
+  <main class="main-content">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <span class="hero-tag">📊 2025 트렌드 & 인사이트 보고서</span>
+        <h1 class="hero-title">산업 트렌드, 핀테크, 시니어 웰니스부터 노마드 라이프까지 분석합니다</h1>
+        <p class="hero-description">
+          InsightLab은 데이터 기반 전문 분석 보고서와 심도 깊은 지식 아티클을 전하는 미디어 웹진입니다. AI 자동 요약과 분기별 아카이브 시스템을 결합했습니다.
+        </p>
+        <div class="hero-cta">
+          <a href="./posts.html" class="btn btn-primary">🔥 최신 보고서 읽기</a>
+          <a href="./editor.html" class="btn btn-outline" style="background:rgba(255,255,255,0.15); color:#fff; border-color:rgba(255,255,255,0.3);">✍️ 보고서 기고하기</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Top Featured Reports -->
+    <section>
+      <div class="section-header">
+        <h2 class="section-title">📌 주요 추천 보고서 & 웹진</h2>
+        <a href="./posts.html" style="font-weight:600; font-size:0.9rem; color:var(--accent-blue);">전체 보기 →</a>
+      </div>
+
+      <div class="category-tabs" id="category-tabs">
+        <button class="tab-btn active" data-cat="전체">전체</button>
+        <button class="tab-btn" data-cat="IT·테크">IT·테크</button>
+        <button class="tab-btn" data-cat="라이프·웰니스">라이프·웰니스</button>
+        <button class="tab-btn" data-cat="글로벌·트렌드">글로벌·트렌드</button>
+        <button class="tab-btn" data-cat="여행·문화">여행·문화</button>
+      </div>
+
+      <div class="reports-grid" id="featured-reports-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- Visual Highlights Banner Grid (Images Placement) -->
+    <section style="margin-top: 3rem;">
+      <div class="section-header">
+        <h2 class="section-title">💡 테마별 인사이트 프리뷰</h2>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+        
+        <div style="background: #fff; border-radius: var(--radius-md); border:1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-sm);">
+          <img src="https://image-hub-studio.herestay-4226.chatgpt.site/api/images/7iLRc6oD_1793769907772" alt="스마트 핀테크 빌딩 숲" style="width:100%; height:180px; object-fit:cover;">
+          <div style="padding:1.25rem;">
+            <span style="font-size:0.75rem; font-weight:700; color:var(--accent-blue);">IT / 핀테크</span>
+            <h4 style="margin: 0.4rem 0 0.6rem; font-size:1.05rem;">도시 도심과 스마트폰 금융 네트워크</h4>
+            <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">도시 빌딩 숲을 배경으로 모바일 핀테크 생태계와 6G/AI 인증 서비스 도입 성과를 정밀 조명합니다.</p>
+            <a href="./post.html?id=post_1" style="display:inline-block; margin-top:0.8rem; font-size:0.85rem; font-weight:700; color:var(--accent-blue);">분석서 읽기 →</a>
+          </div>
+        </div>
+
+        <div style="background: #fff; border-radius: var(--radius-md); border:1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-sm);">
+          <img src="https://image-hub-studio.herestay-4226.chatgpt.site/api/images/7iLRc6oD_1792646356477" alt="손자와 파크골프 친절한 레슨" style="width:100%; height:180px; object-fit:cover;">
+          <div style="padding:1.25rem;">
+            <span style="font-size:0.75rem; font-weight:700; color:var(--accent-emerald);">웰니스 / 세대통합</span>
+            <h4 style="margin: 0.4rem 0 0.6rem; font-size:1.05rem;">어린 손자와 할아버지의 파크골프 문화</h4>
+            <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">손자에게 파크골프 채 잡는 법을 친절히 가르치며 만들어가는 세대 공감 웰니스 리포트입니다.</p>
+            <a href="./post.html?id=post_2" style="display:inline-block; margin-top:0.8rem; font-size:0.85rem; font-weight:700; color:var(--accent-blue);">분석서 읽기 →</a>
+          </div>
+        </div>
+
+        <div style="background: #fff; border-radius: var(--radius-md); border:1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-sm);">
+          <img src="https://image-hub-studio.herestay-4226.chatgpt.site/api/images/external_94a1885a0d4a9c8ba6a33e6386efb089365f1515a44c0bd10084d0a5512a41a9" alt="AI 개발자를 위한 치앙마이" style="width:100%; height:180px; object-fit:cover;">
+          <div style="padding:1.25rem;">
+            <span style="font-size:0.75rem; font-weight:700; color:var(--accent-cyan);">글로벌 노마드</span>
+            <h4 style="margin: 0.4rem 0 0.6rem; font-size:1.05rem;">AI 개발자를 위한 치앙마이 워케이션</h4>
+            <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">경제적 자유와 집중도를 최상으로 높여주는 스마트한 치앙마이 코워킹 네트워크 조사 결과.</p>
+            <a href="./post.html?id=post_3" style="display:inline-block; margin-top:0.8rem; font-size:0.85rem; font-weight:700; color:var(--accent-blue);">분석서 읽기 →</a>
+          </div>
+        </div>
+
+        <div style="background: #fff; border-radius: var(--radius-md); border:1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-sm);">
+          <img src="https://image-hub-studio.herestay-4226.chatgpt.site/api/images/vizbot_25399a703b2f6fc89897cf5d4be8f080fe6bb1d313f0b5d5bf49288bb0ece6ab" alt="1박 2일 강원도 여행 코스" style="width:100%; height:180px; object-fit:cover;">
+          <div style="padding:1.25rem;">
+            <span style="font-size:0.75rem; font-weight:700; color:#d97706;">로컬 에코 투어</span>
+            <h4 style="margin: 0.4rem 0 0.6rem; font-size:1.05rem;">1박 2일 강원도 힐링 여행 동선</h4>
+            <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">동해안 힐링 트레일과 청정 로컬 푸드를 결합한 효율적인 1박 2일 스케줄 안내.</p>
+            <a href="./post.html?id=post_4" style="display:inline-block; margin-top:0.8rem; font-size:0.85rem; font-weight:700; color:var(--accent-blue);">분석서 읽기 →</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="footer-logo">InsightLab Report</div>
+        <p>글로벌 산업 트렌드, 기술 혁신, 사회문화 웰니스 현안을 정교하게 분석하여 깊이 있는 리포트를 제공하는 전문 웹진 플랫폼입니다.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>메뉴 바로가기</h4>
+          <ul>
+            <li><a href="./index.html">홈</a></li>
+            <li><a href="./posts.html">보고서 목록</a></li>
+            <li><a href="./archive.html">아카이브 매트릭스</a></li>
+            <li><a href="./editor.html">보고서 작성</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>계정 및 관리</h4>
+          <ul>
+            <li><a href="./login.html">로그인</a></li>
+            <li><a href="./signup.html">회원가입</a></li>
+            <li><a href="./admin.html">관리자 센터</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2025 InsightLab Professional Platform. All rights reserved. Cloudflare Workers & D1 Fullstack Engine.
+    </div>
+  </footer>
+
+  <script src="./app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      await checkAuth();
+
+      let posts = window.MOCK_POSTS;
+      try {
+        const res = await fetch('/api/posts');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.posts && data.posts.length > 0) {
+            posts = data.posts;
+          }
+        }
+      } catch (e) {
+        console.log('Using static fallback post data for index view');
+      }
+
+      function renderGrid(category = '전체') {
+        const grid = document.getElementById('featured-reports-grid');
+        const filtered = (category === '전체') ? posts : posts.filter(p => p.category === category);
+        
+        if (filtered.length === 0) {
+          grid.innerHTML = `<div style="grid-column: 1/-1; padding:3rem; text-align:center; color:var(--text-muted); background:#fff; border-radius:var(--radius-md);">등록된 보고서가 없습니다.</div>`;
+          return;
+        }
+
+        grid.innerHTML = filtered.map(post => createReportCardHTML(post)).join('');
+      }
+
+      renderGrid();
+
+      // Tab handlers
+      document.getElementById('category-tabs').addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON') {
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          e.target.classList.add('active');
+          renderGrid(e.target.getAttribute('data-cat'));
+        }
+      });
+    });
+  </script>
+</body>
+</html>

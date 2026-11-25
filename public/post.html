@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>보고서 상세 | InsightLab</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="./index.html" class="logo-area">
+        <span>InsightLab</span>
+        <span class="logo-badge">PRO REPORT</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="./index.html">홈</a></li>
+        <li><a href="./posts.html">보고서 목록</a></li>
+        <li><a href="./archive.html">아카이브 Matrix</a></li>
+        <li><a href="./editor.html">보고서 작성</a></li>
+      </ul>
+      <div class="nav-actions" id="nav-user-actions">
+        <a href="./login.html" class="btn btn-outline btn-sm">로그인</a>
+        <a href="./signup.html" class="btn btn-primary btn-sm">회원가입</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content" style="max-width: 900px;">
+    <div style="margin-bottom: 1.5rem;">
+      <a href="./posts.html" style="color:var(--text-muted); font-weight:600; font-size:0.9rem;">← 목록으로 돌아가기</a>
+    </div>
+
+    <!-- Article Header -->
+    <article class="article-header">
+      <span class="article-category" id="post-category">분석 보고서</span>
+      <h1 class="article-title" id="post-title">보고서 제목을 불러오는 중입니다...</h1>
+
+      <div class="article-meta-bar">
+        <div class="author-profile">
+          <div class="avatar" id="author-avatar">연구</div>
+          <div class="author-details">
+            <div class="name" id="author-name">InsightLab 연구원</div>
+            <div class="role" id="author-role">전문 분석위원</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:1.25rem; align-items:center;">
+          <span id="post-date">📅 2025.02.18</span>
+          <span id="post-readtime">⏱️ 5분 읽기</span>
+          <button id="btn-like" class="btn btn-outline btn-sm" style="border-radius:50px;">
+            ❤️ 좋아요 <span id="likes-count">0</span>
+          </button>
+        </div>
+      </div>
+    </article>
+
+    <!-- AI 요약 섹션 -->
+    <div class="ai-summary-box">
+      <div class="ai-summary-header">
+        <span class="ai-badge">🤖 AI 연구원 핵심 요약 & 시사점</span>
+        <button id="btn-re-summarize" class="btn btn-outline btn-sm" style="font-size:0.75rem;">🔄 요약 다시 생성</button>
+      </div>
+      <div class="ai-summary-content" id="ai-summary-text">
+        AI 엔진이 보고서 주요 요약과 정책/사업적 시사점을 추출 중입니다...
+      </div>
+    </div>
+
+    <!-- Featured Image -->
+    <div class="featured-image-box" id="image-container" style="display:none;">
+      <img id="post-image" src="" alt="보고서 대표 이미지">
+    </div>
+
+    <!-- Body Content -->
+    <div class="article-content" id="post-content">
+      <p>본문 내용을 로딩하고 있습니다...</p>
+    </div>
+
+    <!-- Tags & Action -->
+    <div style="margin-bottom: 3rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+      <div id="post-tags" style="display:flex; gap:0.5rem; flex-wrap:wrap;"></div>
+      <div id="owner-actions" style="display:none; gap:0.5rem;">
+        <button id="btn-edit-post" class="btn btn-outline btn-sm">✏️ 수정</button>
+        <button id="btn-delete-post" class="btn btn-outline btn-sm" style="color:#dc2626; border-color:#fca5a5;">🗑️ 삭제</button>
+      </div>
+    </div>
+
+    <!-- Comments / Feedback Section -->
+    <section class="comments-section">
+      <h3 style="font-size:1.25rem; font-weight:700; margin-bottom:1.25rem; color:var(--primary-900);">💬 피드백 및 전문가 의견</h3>
+
+      <form id="comment-form" style="margin-bottom: 2rem;">
+        <div class="form-group">
+          <textarea id="comment-input" class="form-textarea" placeholder="이 분석 보고서에 대한 피드백이나 반론, 전문 의견을 작성해 주세요." style="min-height:90px;" required></textarea>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <input type="text" id="comment-name" class="form-input" placeholder="이름 (비회원 가능)" style="width:200px; padding:0.4rem 0.8rem; font-size:0.875rem;">
+          <button type="submit" class="btn btn-primary btn-sm">의견 등록</button>
+        </div>
+      </form>
+
+      <div class="comment-list" id="comment-list">
+        <!-- Rendered Comments -->
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="footer-logo">InsightLab Report</div>
+        <p>글로벌 산업 트렌드, 기술 혁신, 사회문화 웰니스 현안을 정교하게 분석하여 깊이 있는 리포트를 제공하는 전문 웹진 플랫폼입니다.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>메뉴 바로가기</h4>
+          <ul>
+            <li><a href="./index.html">홈</a></li>
+            <li><a href="./posts.html">보고서 목록</a></li>
+            <li><a href="./archive.html">아카이브 매트릭스</a></li>
+            <li><a href="./editor.html">보고서 작성</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">&copy; 2025 InsightLab Professional Platform. Cloudflare Workers & D1.</div>
+  </footer>
+
+  <script src="./app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      await checkAuth();
+
+      const params = new URLSearchParams(window.location.search);
+      const postId = params.get('id') || 'post_1';
+
+      let currentPost = null;
+
+      try {
+        const res = await fetch(`/api/posts/${postId}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.post) currentPost = data.post;
+        }
+      } catch (e) {
+        console.log('Fetching post detail from static mock fallback');
+      }
+
+      if (!currentPost) {
+        currentPost = window.MOCK_POSTS.find(p => p.id === postId) || window.MOCK_POSTS[0];
+      }
+
+      // Render UI
+      document.title = `${currentPost.title} | InsightLab`;
+      document.getElementById('post-category').textContent = currentPost.category || '전문 보고서';
+      document.getElementById('post-title').textContent = currentPost.title;
+      document.getElementById('author-name').textContent = currentPost.author_name || '인사이트 연구원';
+      document.getElementById('author-avatar').textContent = (currentPost.author_name || '인')[0];
+      document.getElementById('post-date').textContent = `📅 ${currentPost.created_at ? currentPost.created_at.slice(0, 10) : '2025-02-18'}`;
+      document.getElementById('post-readtime').textContent = `⏱️ ${currentPost.reading_time || 5}분 읽기`;
+      document.getElementById('likes-count').textContent = currentPost.likes_count || 0;
+
+      if (currentPost.image_url) {
+        const imgBox = document.getElementById('image-container');
+        const img = document.getElementById('post-image');
+        img.src = currentPost.image_url;
+        imgBox.style.display = 'block';
+      }
+
+      document.getElementById('post-content').innerHTML = currentPost.content;
+
+      // Summary
+      const summaryText = currentPost.summary ? 
+        `1. ${currentPost.summary}\n\n2. 주요 핵심 데이터 시사점 및 미래 파급효과가 높게 평가됨.\n\n3. 관련 부서 및 이해관계자의 지속적 전략 모니터링 수립 필요.` :
+        '핵심 요약 데이터를 불러오는 중입니다...';
+      document.getElementById('ai-summary-text').textContent = summaryText;
+
+      // Tags
+      if (currentPost.tags) {
+        const tagsContainer = document.getElementById('post-tags');
+        const tagList = currentPost.tags.split(',').map(t => t.trim()).filter(Boolean);
+        tagsContainer.innerHTML = tagList.map(t => `<span style="background:#e2e8f0; color:var(--primary-800); font-size:0.75rem; font-weight:600; padding:0.25rem 0.6rem; border-radius:4px;">#${escapeHtml(t)}</span>`).join('');
+      }
+
+      // Owner Actions Button visibility
+      if (window.currentUser && (window.currentUser.role === 'admin' || window.currentUser.id === currentPost.author_id)) {
+        const actionsBox = document.getElementById('owner-actions');
+        actionsBox.style.display = 'flex';
+        
+        document.getElementById('btn-edit-post').addEventListener('click', () => {
+          window.location.href = `./editor.html?id=${currentPost.id}`;
+        });
+
+        document.getElementById('btn-delete-post').addEventListener('click', async () => {
+          if (!confirm('정말 이 보고서를 삭제하시겠습니까?')) return;
+          try {
+            const res = await fetch(`/api/posts/${currentPost.id}`, { method: 'DELETE' });
+            if (res.ok) {
+              alert('삭제되었습니다.');
+              window.location.href = './posts.html';
+              return;
+            }
+          } catch(e) {}
+          alert('독립 프리뷰 모드: 정상 삭제 처리 시뮬레이션 완료');
+          window.location.href = './posts.html';
+        });
+      }
+
+      // Like Button Event
+      document.getElementById('btn-like').addEventListener('click', async () => {
+        let newCount = (parseInt(document.getElementById('likes-count').textContent, 10) || 0) + 1;
+        try {
+          const res = await fetch(`/api/posts/${currentPost.id}/like`, { method: 'POST' });
+          if (res.ok) {
+            const data = await res.json();
+            newCount = data.likes_count;
+          }
+        } catch(e) {}
+        document.getElementById('likes-count').textContent = newCount;
+      });
+
+      // AI Summarize Button Event
+      document.getElementById('btn-re-summarize').addEventListener('click', async () => {
+        const box = document.getElementById('ai-summary-text');
+        box.textContent = '🤖 AI 엔진 분석 수행 중... 최신 인사이트를 추출 중입니다...';
+        try {
+          const res = await fetch('/api/ai/summarize', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: currentPost.title, content: currentPost.content })
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.summary) {
+              box.textContent = data.summary;
+              return;
+            }
+          }
+        } catch (e) {}
+
+        box.textContent = `[AI 수석 연구원 자동 생성 요약]\n\n• 현안 분석: ${currentPost.title}의 정성 및 정량 분석 결과입니다.\n• 시사점: ${currentPost.summary}\n• 권고사항: 선제적 대응 전략 수립과 실시간 데이터 트래킹 추진.`;
+      });
+
+      // Comments Handling
+      let comments = [
+        { user_name: '강석진 이사', content: '현장 실무에서도 바로 적용 가능한 심도 깊은 데이터 분석 보고서입니다. 좋은 시사점에 감사드립니다.', created_at: '2025-02-18 11:20' },
+        { user_name: '윤혜원 분석가', content: '추가적인 통계 세부 지표가 보완된다면 차기 전략 로드맵 작성 시 더욱 유용할 것으로 기대됩니다.', created_at: '2025-02-18 13:45' }
+      ];
+
+      try {
+        const cRes = await fetch(`/api/posts/${currentPost.id}/comments`);
+        if (cRes.ok) {
+          const cData = await cRes.json();
+          if (cData.comments && cData.comments.length > 0) comments = cData.comments;
+        }
+      } catch(e) {}
+
+      function renderComments() {
+        const list = document.getElementById('comment-list');
+        if (comments.length === 0) {
+          list.innerHTML = `<div style="color:var(--text-muted); font-size:0.9rem;">등록된 의견이 없습니다. 첫 의견을 작성해보세요.</div>`;
+          return;
+        }
+        list.innerHTML = comments.map(c => `
+          <div class="comment-item">
+            <div class="comment-header">
+              <span class="comment-user">👤 ${escapeHtml(c.user_name || '연구원')}</span>
+              <span class="comment-date">${c.created_at ? c.created_at.slice(0,16) : '방금 전'}</span>
+            </div>
+            <div class="comment-body">${escapeHtml(c.content)}</div>
+          </div>
+        `).join('');
+      }
+      renderComments();
+
+      document.getElementById('comment-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const content = document.getElementById('comment-input').value.trim();
+        const userName = document.getElementById('comment-name').value.trim() || (window.currentUser ? window.currentUser.name : '비공개 분석가');
+        if (!content) return;
+
+        try {
+          const res = await fetch(`/api/posts/${currentPost.id}/comments`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content, userName })
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.comment) {
+              comments.unshift(data.comment);
+              renderComments();
+              document.getElementById('comment-input').value = '';
+              return;
+            }
+          }
+        } catch(e) {}
+
+        comments.unshift({ user_name: userName, content: content, created_at: new Date().toISOString() });
+        renderComments();
+        document.getElementById('comment-input').value = '';
+      });
+    });
+  </script>
+</body>
+</html>
