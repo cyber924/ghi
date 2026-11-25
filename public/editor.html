@@ -117,9 +117,8 @@ body.editor-page .main-content{max-width:1280px;padding:48px 28px 76px}
           <!-- Cover Image URL & Preset Selection -->
           <div class="form-group">
             <label for="post-image" class="form-label">대표 썸네일 이미지 URL</label>
-            <div style="display: flex; gap: 0.5rem;">
-              <input type="url" id="post-image" class="form-control" placeholder="https://example.com/cover-image.jpg" value="https://image-hub-studio.herestay-4226.chatgpt.site/api/images/7iLRc6oD_1793769907772">
-            </div>
+            <input type="url" id="post-image" class="form-control" placeholder="https://example.com/cover-image.jpg" value="https://image-hub-studio.herestay-4226.chatgpt.site/api/images/7iLRc6oD_1793769907772">
+            <div class="cover-preview"><img id="cover-preview-image" src="https://image-hub-studio.herestay-4226.chatgpt.site/api/images/7iLRc6oD_1793769907772" alt="대표 이미지 미리보기" onerror="this.style.opacity='.25'"><div class="cover-preview-copy"><strong>대표 이미지 미리보기</strong><span>이미지 주소를 입력하거나 아래 추천 이미지를 선택하세요.</span></div></div>
             <div class="preset-list">
               <span>추천 선택 이미지:</span>
               <button type="button" class="preset-img-btn" onclick="setEditorImage('https://image-hub-studio.herestay-4226.chatgpt.site/api/images/7iLRc6oD_1793769907772')">🏢 빌딩&핀테크</button>
@@ -216,6 +215,8 @@ body.editor-page .main-content{max-width:1280px;padding:48px 28px 76px}
   <script>
     function setEditorImage(url) {
       document.getElementById('post-image').value = url;
+      const preview = document.getElementById('cover-preview-image');
+      if (preview) preview.src = url;
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
@@ -263,7 +264,7 @@ body.editor-page .main-content{max-width:1280px;padding:48px 28px 76px}
           summaryInput.value = existing.summary || '';
           contentInput.value = existing.content || '';
           tagsInput.value = Array.isArray(existing.tags) ? existing.tags.join(', ') : (existing.tags || '');
-          statusSelect.value = Number(existing.is_published) === 0 ? 'draft' : (existing.status || 'published');
+          statusSelect.value = Number(existing.is_published) === 0 ? 'draft' : 'published';
           counter.textContent = (existing.content || '').length + '자';
         }
       }
@@ -289,7 +290,7 @@ body.editor-page .main-content{max-width:1280px;padding:48px 28px 76px}
 
         const originalBtnText = document.getElementById('btn-ai-generate').innerHTML;
         document.getElementById('btn-ai-generate').disabled = true;
-        document.getElementById('btn-ai-generate').innerHTML = '⏳ AI 분서 중...';
+        document.getElementById('btn-ai-generate').innerHTML = '⏳ AI 분석 중...';
 
         try {
           const res = await fetch('/api/ai/summarize', {
@@ -325,6 +326,15 @@ body.editor-page .main-content{max-width:1280px;padding:48px 28px 76px}
       document.getElementById('editor-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         
+        if (!titleInput.value.trim() || !contentInput.value.trim()) {
+          alert('보고서 제목과 본문을 입력해주세요.');
+          (!titleInput.value.trim() ? titleInput : contentInput).focus();
+          return;
+        }
+        submitBtn.disabled = true;
+        const originalSubmitText = submitBtn.textContent;
+        submitBtn.textContent = '저장 중...';
+
         const payload = {
           title: titleInput.value.trim(),
           category: catSelect.value,
@@ -357,6 +367,8 @@ body.editor-page .main-content{max-width:1280px;padding:48px 28px 76px}
         } catch (err) {
           console.error('Report submission failed:', err);
           alert('보고서 저장에 실패했습니다: ' + (err.message || '서버 연결을 확인해주세요.'));
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalSubmitText;
           return;
         }
 
