@@ -309,7 +309,7 @@ async function handleCreatePost(request, env) {
   requireDB(env);
 
   const body = await request.json();
-  const { title, summary, content, category, tags, image_url, reading_time = 5 } = body;
+  const { title, summary, content, category, tags, image_url, reading_time = 5, status = 'published' } = body;
 
   if (!title || !content || !category) {
     return jsonResponse({ error: '제목, 카테고리, 본문 내용은 필수입니다.' }, 400);
@@ -321,21 +321,23 @@ async function handleCreatePost(request, env) {
   const slug = title.toLowerCase().replace(/[^a-z0-9가-힣]+/g, '-').slice(0, 50) + '-' + Date.now().toString().slice(-4);
 
   await env.DB.prepare(
-    `INSERT INTO posts (id, slug, title, summary, content, category, tags, author_id, author_name, image_url, reading_time)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    `INSERT INTO posts (id, slug, title, summary, content, category, tags, author_id, author_name, image_url, reading_time, is_published)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(
-    postId, slug, title, summary || title.slice(0, 100), content, category, tags || '', session.userId, authorName, image_url || '', reading_time
+    postId, slug, title, summary || title.slice(0, 100), content, category, Array.isArray(tags) ? tags.join(', ') : (tags || ''), session.userId, authorName, image_url || '', reading_time, status === 'draft' ? 0 : 1
   ).run();
 
-  // Create archive entry
-  const now = new Date();
-  const year = now.getFullYear();
-  const q = Math.ceil((now.getMonth() + 1) / 3) + '분기';
-  await env.DB.prepare(
-    `INSERT INTO archives (id, post_id, sector, year, quarter) VALUES (?, ?, ?, ?, ?)`
-  ).bind('arc_' + crypto.randomUUID().slice(0, 8), postId, category, year, q).run();
+  // Only published reports are added to the public archive.
+  if (status !== 'draft') {
+    const now = new Date();
+    const year = now.getFullYear();
+    const q = Math.ceil((now.getMonth() + 1) / 3) + '분기';
+    await env.DB.prepare(
+      `INSERT INTO archives (id, post_id, sector, year, quarter) VALUES (?, ?, ?, ?, ?)`
+    ).bind('arc_' + crypto.randomUUID().slice(0, 8), postId, category, year, q).run();
+  }
 
-  return jsonResponse({ message: '보고서가 등록되었습니다.', id: postId }, 201);
+  return jsonResponse({ message: status === 'draft' ? '임시 저장되었습니다.' : '보고서가 등록되었습니다.', id: postId }, 201);
 }
 
 async function handleGetPostDetail(request, env, id) {
@@ -367,11 +369,23 @@ async function handleUpdatePost(request, env, id) {
   }
 
   const body = await request.json();
-  const { title, summary, content, category, tags, image_url } = body;
+  const { title, summary, content, category, tags, image_url, status = 'published' } = body;
+  const isPublished = status === 'draft' ? 0 : 1;
 
   await env.DB.prepare(
-    `UPDATE posts SET title = ?, summary = ?, content = ?, category = ?, tags = ?, image_url = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`
-  ).bind(title, summary, content, category, tags, image_url, id).run();
+    `UPDATE posts SET title = ?, summary = ?, content = ?, category = ?, tags = ?, image_url = ?, is_published = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`
+  ).bind(title, summary, content, category, Array.isArray(tags) ? tags.join(', ') : (tags || ''), image_url || '', isPublished, id).run();
+
+  if (!isPublished) {
+    await env.DB.prepare('DELETE FROM archives WHERE post_id = ?').bind(id).run();
+  } else {
+    const now = new Date();
+    const year = now.getFullYear();
+    const quarter = Math.ceil((now.getMonth() + 1) / 3) + '분기';
+    await env.DB.prepare(
+      `INSERT INTO archives (id, post_id, sector, year, quarter) SELECT ?, ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM archives WHERE post_id = ?)`
+    ).bind('arc_' + crypto.randomUUID().slice(0, 8), id, category, year, quarter, id).run();
+  }
 
   return jsonResponse({ message: '보고서가 성공적으로 수정되었습니다.' });
 }
